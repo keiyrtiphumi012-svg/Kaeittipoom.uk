@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Matrix 40/20 Equilibrium Game</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #050505;
+  color: white;
+}
+
+.game {
+  width: min(1000px, 94%);
+  margin: auto;
+  padding: 25px 0 50px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+h1 {
+  font-size: 38px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #999;
+}
+
+.level {
+  margin-top: 15px;
+  display: inline-block;
+  padding: 8px 15px;
+  border: 1px solid #333;
+  border-radius: 20px;
+}
+
+/* TARGET */
+
+.targets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.target {
+  background: #111;
+  border: 1px solid #292929;
+  border-radius: 15px;
+  padding: 20px 10px;
+  text-align: center;
+}
+
+.target-name {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.target-value {
+  font-size: 34px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+/* GAME BOARD */
+
+.board {
+  margin-top: 20px;
+  padding: 25px;
+  background: #101010;
+  border: 1px solid #292929;
+  border-radius: 18px;
+}
+
+.component {
+  margin-bottom: 25px;
+}
+
+.component-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.name {
+  font-weight: bold;
+}
+
+.actual {
+  font-size: 22px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.deviation {
+  color: #888;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* RESULT */
+
+.result {
+  margin-top: 20px;
+  padding: 30px;
+  text-align: center;
+  background: #080808;
+  border: 1px solid #333;
+  border-radius: 18px;
+}
+
+.vector-label {
+  color: #999;
+}
+
+.vector {
+  font-size: 55px;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.status {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.message {
+  color: #aaa;
+  margin-top: 10px;
+}
+
+/* BUTTON */
+
+button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.reset {
+  background: #222;
+  color: white;
+}
+
+.start {
+  background: white;
+  color: black;
+}
+
+/* SCORE */
+
+.score {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding: 15px;
+  background: #111;
+  border-radius: 12px;
+}
+
+.score div {
+  text-align: center;
+}
+
+.score-number {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+/* MOBILE */
+
+@media(max-width:650px) {
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .targets {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .board {
+    padding: 18px;
+  }
+
+  .vector {
+    font-size: 42px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+<header>
+
+<h1>⚛ MATRIX 40/20</h1>
+
+<div class="subtitle">
+Structural Equilibrium Game
+</div>
+
+<div class="level">
+LEVEL <span id="level">1</span>
+</div>
+
+</header>
+
+
+<!-- TARGET VALUES -->
+
+<div class="targets">
+
+<div class="target">
+<div class="target-name">CORE</div>
+<div class="target-value">0</div>
+</div>
+
+<div class="target">
+<div class="target-name">PILLARS</div>
+<div class="target-value">10</div>
+</div>
+
+<div class="target">
+<div class="target-name">NETWORK</div>
+<div class="target-value">40</div>
+</div>
+
+<div class="target">
+<div class="target-name">RING</div>
+<div class="target-value">120</div>
+</div>
+
+</div>
+
+
+<!-- GAME BOARD -->
+
+<div class="board">
+
+<h2>ปรับโครงสร้างระบบ</h2>
+
+<p style="color:#888;">
+เลื่อนค่าแต่ละชั้น แล้วทำให้ Vector Sum = 0.0000
+</p>
+
+
+<!-- CORE -->
+
+<div class="component">
+
+<div class="component-header">
+
+<span class="name">CORE</span>
+
+<span class="actual">
+<span id="coreValue">0</span>
+</span>
+
+</div>
+
+<input
+id="core"
+type="range"
+min="-50"
+max="50"
+value="0"
+step="0.1"
+oninput="updateGame()">
+
+<div class="deviation" id="coreDev">
+Deviation: 0.0000
+</div>
+
+</div>
+
+
+<!-- PILLARS -->
+
+<div class="component">
+
+<div class="component-header">
+
+<span class="name">PILLARS</span>
+
+<span class="actual">
+<span id="pillarsValue">10</span>
+</span>
+
+</div>
+
+<input
+id="pillars"
+type="range"
+min="-50"
+max="70"
+value="10"
+step="0.1"
+oninput="updateGame">
+
+<div class="deviation" id="pillarsDev">
+Deviation: 0.0000
+</div>
+
+</div>
+
+
+<!-- NETWORK -->
+
+<div class="component">
+
+<div class="component-header">
+
+<span class="name">NETWORK</span>
+
+<span class="actual">
+<span id="networkValue">40</span>
+</span>
+
+</div>
+
+<input
+id="network"
+type="range"
+min="0"
+max="100"
+value="40"
+step="0.1"
+oninput="updateGame()">
+
+<div class="deviation" id="networkDev">
+Deviation: 0.0000
+</div>
+
+</div>
+
+
+<!-- RING -->
+
+<div class="component">
+
+<div class="component-header">
+
+<span class="name">RING
